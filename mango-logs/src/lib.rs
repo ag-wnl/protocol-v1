@@ -37,7 +37,9 @@ pub fn mango_emit_buffers<T: AnchorSerialize + Discriminator>(
     out_buf: &mut [u8],
 ) {
     let mut data_writer = std::io::Cursor::new(data_buf);
-    data_writer.write_all(&<T as Discriminator>::discriminator()).unwrap();
+    data_writer
+        .write_all(&<T as Discriminator>::DISCRIMINATOR)
+        .unwrap();
     borsh::to_writer(&mut data_writer, &event).unwrap();
     let data_len = data_writer.position() as usize;
 
