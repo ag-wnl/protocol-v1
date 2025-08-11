@@ -7729,24 +7729,24 @@ impl Processor {
         let instruction =
             MangoInstruction::unpack(data).ok_or(ProgramError::InvalidInstructionData)?;
         match instruction {
-            //     MangoInstruction::InitMangoGroup {
-            //         signer_nonce,
-            //         valid_interval,
-            //         quote_optimal_util,
-            //         quote_optimal_rate,
-            //         quote_max_rate,
-            //     } => {
-            //         msg!("Mango: InitMangoGroup");
-            //         Self::init_mango_group(
-            //             program_id,
-            //             accounts,
-            //             signer_nonce,
-            //             valid_interval,
-            //             quote_optimal_util,
-            //             quote_optimal_rate,
-            //             quote_max_rate,
-            //         )
-            //     }
+            MangoInstruction::InitMangoGroup {
+                signer_nonce,
+                valid_interval,
+                quote_optimal_util,
+                quote_optimal_rate,
+                quote_max_rate,
+            } => {
+                msg!("Mango: InitMangoGroup");
+                Self::init_mango_group(
+                    program_id,
+                    accounts,
+                    signer_nonce,
+                    valid_interval,
+                    quote_optimal_util,
+                    quote_optimal_rate,
+                    quote_max_rate,
+                )
+            }
             //     MangoInstruction::InitMangoAccount => {
             //         msg!("Mango: InitMangoAccount DEPRECATED");
             //         Self::init_mango_account(program_id, accounts)

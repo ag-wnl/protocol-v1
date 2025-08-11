@@ -52,7 +52,7 @@ pub enum NodeTag {
 /// or LeafNodes. The children share the top `prefix_len` bits of `key`. The left
 /// child has a 0 in the next bit, and the right a 1.
 #[derive(Copy, Clone, Pod)]
-#[repr(C, align(16))]
+#[repr(C)]
 pub struct InnerNode {
     pub tag: u32,
     /// number of highest `key` bits that all children share
@@ -103,7 +103,7 @@ impl InnerNode {
 
 /// LeafNodes represent an order in the binary tree
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Pod)]
-#[repr(C, align(16))]
+#[repr(C)]
 pub struct LeafNode {
     pub tag: u32,
     pub owner_slot: u8,
@@ -183,7 +183,7 @@ impl LeafNode {
 }
 
 #[derive(Copy, Clone, Pod)]
-#[repr(C, align(16))]
+#[repr(C)]
 struct FreeNode {
     tag: u32,
     next: NodeHandle,
@@ -191,7 +191,7 @@ struct FreeNode {
 }
 
 #[derive(Copy, Clone, Pod)]
-#[repr(C, align(16))]
+#[repr(C)]
 pub struct AnyNode {
     pub tag: u32,
     pub data: [u8; NODE_SIZE - 4],

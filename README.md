@@ -31,7 +31,19 @@ All tests are located in `/program/tests`.
 To run all tests:
 
 ```sh
-cargo test -- --show-output
+cd program
+cargo check
+cargo test --lib -- --nocapture
+cargo test -- --nocapture  # runs integration tests in program/tests
+
+# specific flows:
+cargo test -q test_perp_markets -- --nocapture
+cargo test -q test_place_perp_order -- --nocapture
+cargo test -q test_consume_events -- --nocapture
+
+# start local validator
+solana-test-validator --reset
+solana config set --url http://127.0.0.1:8899
 ```
 
 ```
