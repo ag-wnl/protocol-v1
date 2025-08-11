@@ -30,7 +30,7 @@ use crate::utils::emit_perp_balances;
 declare_check_assert_macros!(SourceFileId::Matching);
 pub type NodeHandle = u32;
 
-const NODE_SIZE: usize = 88;
+const NODE_SIZE: usize = 96;
 
 /// Drop at most this many expired orders from a BookSide when trying to match orders.
 /// This exists as a guard against excessive compute use.
@@ -52,7 +52,7 @@ pub enum NodeTag {
 /// or LeafNodes. The children share the top `prefix_len` bits of `key`. The left
 /// child has a 0 in the next bit, and the right a 1.
 #[derive(Copy, Clone, Pod)]
-#[repr(C)]
+#[repr(C, align(16))]
 pub struct InnerNode {
     pub tag: u32,
     /// number of highest `key` bits that all children share
@@ -71,7 +71,7 @@ pub struct InnerNode {
     /// iterate through the whole bookside.
     pub child_earliest_expiry: [u64; 2],
 
-    pub padding: [u8; NODE_SIZE - 48],
+    pub padding: [u8; NODE_SIZE - 56],
 }
 
 impl InnerNode {
@@ -82,7 +82,7 @@ impl InnerNode {
             key,
             children: [0; 2],
             child_earliest_expiry: [u64::MAX; 2],
-            padding: [0; NODE_SIZE - 48],
+            padding: [0; NODE_SIZE - 56],
         }
     }
 
@@ -103,7 +103,7 @@ impl InnerNode {
 
 /// LeafNodes represent an order in the binary tree
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Pod)]
-#[repr(C)]
+#[repr(C, align(16))]
 pub struct LeafNode {
     pub tag: u32,
     pub owner_slot: u8,
@@ -183,7 +183,7 @@ impl LeafNode {
 }
 
 #[derive(Copy, Clone, Pod)]
-#[repr(C)]
+#[repr(C, align(16))]
 struct FreeNode {
     tag: u32,
     next: NodeHandle,
@@ -191,7 +191,7 @@ struct FreeNode {
 }
 
 #[derive(Copy, Clone, Pod)]
-#[repr(C)]
+#[repr(C, align(16))]
 pub struct AnyNode {
     pub tag: u32,
     pub data: [u8; NODE_SIZE - 4],
@@ -666,7 +666,7 @@ impl BookSide {
                 NodeTag::FreeNode.into()
             },
             next: self.free_list_head,
-            padding: [0; 80],
+            padding: [0; 88],
         });
 
         self.free_list_len += 1;

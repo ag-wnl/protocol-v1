@@ -212,7 +212,10 @@ pub enum EventType {
     Liquidate,
 }
 
+#[cfg(target_arch = "bpf")]
 const EVENT_SIZE: usize = 200;
+#[cfg(not(target_arch = "bpf"))]
+const EVENT_SIZE: usize = 224;
 #[derive(Copy, Clone, Debug, Pod)]
 #[repr(C)]
 pub struct AnyEvent {
@@ -384,7 +387,10 @@ pub struct LiquidateEvent {
     pub price: I80F48,           // oracle price at the time of liquidation
     pub quantity: i64,           // number of contracts that were moved from liqee to liqor
     pub liquidation_fee: I80F48, // liq fee for this earned for this market
+    #[cfg(target_arch = "bpf")]
     padding1: [u8; EVENT_SIZE - 128],
+    #[cfg(not(target_arch = "bpf"))]
+    padding1: [u8; EVENT_SIZE - 144],
 }
 unsafe impl TriviallyTransmutable for LiquidateEvent {}
 impl LiquidateEvent {
@@ -407,7 +413,10 @@ impl LiquidateEvent {
             price,
             quantity,
             liquidation_fee,
+            #[cfg(target_arch = "bpf")]
             padding1: [0u8; EVENT_SIZE - 128],
+            #[cfg(not(target_arch = "bpf"))]
+            padding1: [0u8; EVENT_SIZE - 144],
         }
     }
 }

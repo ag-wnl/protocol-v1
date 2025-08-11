@@ -405,10 +405,12 @@ impl MangoProgramTest {
 
         transaction.sign(&all_signers, self.context.last_blockhash);
 
-        self.context
+        self
+            .context
             .banks_client
-            .process_transaction_with_commitment(transaction, CommitmentLevel::Processed)
+            .process_transaction(transaction)
             .await
+            .map_err(TransportError::from)
     }
 
     #[allow(dead_code)]
